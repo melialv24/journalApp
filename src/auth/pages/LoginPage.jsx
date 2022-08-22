@@ -14,7 +14,10 @@ import { Google } from "@mui/icons-material";
 import { AuthLayout } from "../layout/AuthLayout";
 
 import { useForm } from "../../hooks";
-import { startGoogleSignIn } from "../../store/auth";
+import {
+  startGoogleSignIn,
+  startLoginWithEmailPassword,
+} from "../../store/auth";
 
 export const LoginPage = () => {
   const { status, errorMessage } = useSelector((state) => state.auth);
@@ -31,7 +34,7 @@ export const LoginPage = () => {
     event.preventDefault();
 
     // console.log({ email, password })
-    //dispatch(startLoginWithEmailPassword({ email, password }));
+    dispatch(startLoginWithEmailPassword({ email, password }));
   };
 
   const onGoogleSignIn = () => {

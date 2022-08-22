@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import {
@@ -38,6 +38,10 @@ export const RegisterPage = () => {
     () => status === "checking",
     [status]
   );
+
+  useEffect(() => {
+    console.log(errorMessage, "mensaje de error");
+  }, [errorMessage]);
 
   const {
     formState,
