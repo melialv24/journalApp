@@ -7,6 +7,8 @@ import {
   savingNewNote,
   setActiveNote,
   setNotes,
+  setSaving,
+  updateNote,
 } from "./journalSlice";
 
 export const startNewNote = () => {
@@ -42,5 +44,21 @@ export const startLoadingNotes = (uid = "") => {
 
     const notes = await loadNotes(uid);
     dispatch(setNotes(notes));
+  };
+};
+
+export const startSaveNote = () => {
+  return async (dispatch, getState) => {
+    dispatch(setSaving());
+
+    const { uid } = getState().auth;
+    const { active: note } = getState().journal;
+    const noteToFireStore = { ...note };
+    delete noteToFireStore.id;
+
+    const docRef = doc(FirebaseDB, `${uid}/journal/notes/${note.id}`);
+    //merge es que si hay campos que estoy mandando que no existian allá, se mantienen
+    await setDoc(docRef, noteToFireStore, { merge: true });
+    dispatch(updateNote(note));
   };
 };
