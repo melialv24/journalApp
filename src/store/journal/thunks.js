@@ -1,7 +1,7 @@
 import { async } from "@firebase/util";
 import { collection, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
-import { loadNotes } from "../../helpers";
+import { fileUpload, loadNotes } from "../../helpers";
 import {
   addNewEmptyNote,
   savingNewNote,
@@ -9,6 +9,7 @@ import {
   setNotes,
   setSaving,
   updateNote,
+  setPhotosToActiveNote,
 } from "./journalSlice";
 
 export const startNewNote = () => {
@@ -60,5 +61,20 @@ export const startSaveNote = () => {
     //merge es que si hay campos que estoy mandando que no existian allá, se mantienen
     await setDoc(docRef, noteToFireStore, { merge: true });
     dispatch(updateNote(note));
+  };
+};
+
+export const startUploadingFiles = (files = []) => {
+  return async (dispatch, getState) => {
+    dispatch(setSaving());
+
+    //await fileUpload(files[0]);
+    const fileUploadPromises = [];
+    for (const file of files) {
+      fileUploadPromises.push(fileUpload(file));
+    }
+    // its waiting a promise array
+    const photosUrls = await Promise.all(fileUploadPromises);
+    dispatch(setPhotosToActiveNote(photosUrls));
   };
 };
